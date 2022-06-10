@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { Task } from "../interfaces/Task";
 
@@ -6,21 +6,23 @@ interface Props {
   addNewTask: (task: Task) => void;
 }
 
-type handleInputChange = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
-type handleSubmit = FormEvent<HTMLFormElement>;
-
-const initialState = {
-  title: "",
-  description: "",
-}
-
 export const TaskForm = ({ addNewTask }: Props) => {
+    
+  type handleInputChange = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+  type handleSubmit = FormEvent<HTMLFormElement>;
+  
+  const initialState = {
+    title: "",
+    description: "",
+  }
+  const inputTitle = useRef<HTMLInputElement>(null)
   const [task, setTask] = useState(initialState);
 
   const handleSubmitChange = (e: handleSubmit) => {
     e.preventDefault();
     addNewTask(task);
     setTask(initialState);
+    inputTitle.current?.focus();
   };
 
   const handleInputChanged = ({
@@ -42,6 +44,8 @@ export const TaskForm = ({ addNewTask }: Props) => {
           className="form-control mb-3 rounded-0 shadow-none border-0"
           onChange={handleInputChanged}
           value={task.title}
+          autoFocus
+          ref={inputTitle}
         />
         <textarea
           className="form-control mb-3 rounded-0 shadow-none border-0"
